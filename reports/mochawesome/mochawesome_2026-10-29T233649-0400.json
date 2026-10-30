@@ -1,0 +1,182 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 5,
+    "passes": 5,
+    "pending": 0,
+    "failures": 0,
+    "start": "2026-10-30T03:36:47.115Z",
+    "end": "2026-10-30T03:36:49.478Z",
+    "duration": 2363,
+    "testsRegistered": 5,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "97baf0ec-48c8-4c2f-af2e-bba6341dce21",
+      "title": "",
+      "fullFile": "cypress/e2e/api/posts.cy.js",
+      "file": "cypress/e2e/api/posts.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "1df593ec-950f-43cd-ba3a-ed1139846454",
+          "title": "Posts API - CRUD operations",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "GET - should retrieve a post successfully",
+              "fullTitle": "Posts API - CRUD operations GET - should retrieve a post successfully",
+              "timedOut": null,
+              "duration": 1897,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.request(\"GET\", `${API_URL}/posts/1`).then((response) => {\n  expect(response.status).to.eq(200);\n  expect(response.headers[\"content-type\"]).to.include(\"application/json\");\n  expect(response.body).to.have.property(\"id\", 1);\n  expect(response.body.title).to.be.a(\"string\").and.not.be.empty;\n});",
+              "err": {},
+              "uuid": "da221f0b-cc1a-4321-83a6-05a3cb91e9d7",
+              "parentUUID": "1df593ec-950f-43cd-ba3a-ed1139846454",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "GET - should return 404 for a nonexistent post",
+              "fullTitle": "Posts API - CRUD operations GET - should return 404 for a nonexistent post",
+              "timedOut": null,
+              "duration": 47,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.request({\n  method: \"GET\",\n  url: `${API_URL}/posts/999999`,\n  failOnStatusCode: false\n}).then((response) => {\n  expect(response.status).to.eq(404);\n});",
+              "err": {},
+              "uuid": "b3fbab93-2878-4e35-b5a0-438b8bb9cc1c",
+              "parentUUID": "1df593ec-950f-43cd-ba3a-ed1139846454",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "POST - should create a post",
+              "fullTitle": "Posts API - CRUD operations POST - should create a post",
+              "timedOut": null,
+              "duration": 141,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const newPost = {\n  title: \"QA Automation\",\n  body: \"Testing POST requests with Cypress\",\n  userId: 1\n};\ncy.request(\"POST\", `${API_URL}/posts`, newPost).then((response) => {\n  expect(response.status).to.eq(201);\n  expect(response.headers[\"content-type\"]).to.include(\"application/json\");\n  expect(response.body).to.include(newPost);\n  expect(response.body.id).to.exist;\n});",
+              "err": {},
+              "uuid": "7f48fee0-b553-4ba8-be3c-56ed4a2fe826",
+              "parentUUID": "1df593ec-950f-43cd-ba3a-ed1139846454",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "PUT - should update an existing post",
+              "fullTitle": "Posts API - CRUD operations PUT - should update an existing post",
+              "timedOut": null,
+              "duration": 152,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const updatedPost = {\n  id: 1,\n  title: \"Updated title\",\n  body: \"Updated post content\",\n  userId: 1\n};\ncy.request(\"PUT\", `${API_URL}/posts/1`, updatedPost).then((response) => {\n  expect(response.status).to.eq(200);\n  expect(response.headers[\"content-type\"]).to.include(\"application/json\");\n  expect(response.body).to.include(updatedPost);\n});",
+              "err": {},
+              "uuid": "1bb9509f-f8ba-409f-860a-b82456591edd",
+              "parentUUID": "1df593ec-950f-43cd-ba3a-ed1139846454",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "DELETE - should delete a post successfully",
+              "fullTitle": "Posts API - CRUD operations DELETE - should delete a post successfully",
+              "timedOut": null,
+              "duration": 68,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.request(\"DELETE\", `${API_URL}/posts/1`).then((response) => {\n  expect(response.status).to.eq(200);\n  expect(response.body).to.deep.equal({});\n});",
+              "err": {},
+              "uuid": "c1928778-eb73-4fe7-858c-0f74c136f7c5",
+              "parentUUID": "1df593ec-950f-43cd-ba3a-ed1139846454",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "da221f0b-cc1a-4321-83a6-05a3cb91e9d7",
+            "b3fbab93-2878-4e35-b5a0-438b8bb9cc1c",
+            "7f48fee0-b553-4ba8-be3c-56ed4a2fe826",
+            "1bb9509f-f8ba-409f-860a-b82456591edd",
+            "c1928778-eb73-4fe7-858c-0f74c136f7c5"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 2305,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "8.1.1"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "reports/mochawesome",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "timestamp": "isoDateTime"
+      },
+      "version": "6.3.2"
+    }
+  }
+}
