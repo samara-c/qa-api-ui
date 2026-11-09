@@ -6,3 +6,5 @@ cypress/videos/
 .env
 .env.*
 !.env.example
+reports/
+mobile/apps/*.apk
