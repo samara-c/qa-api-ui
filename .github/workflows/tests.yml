@@ -8,8 +8,12 @@ on:
     branches: [main, master]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
-  automated-tests:
+  lint:
+    name: Code Quality - ESLint
     runs-on: ubuntu-latest
 
     steps:
@@ -25,20 +29,140 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run API and E2E tests
-        uses: cypress-io/github-action@v6
-        with:
-          install: false
-          command: npm run cy:run
+      - name: Run ESLint
+        run: npm run lint
 
-      - name: Upload test reports and evidence
+  api:
+    name: API Tests
+    needs: lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run API tests
+        run: npm run test:api
+
+      - name: Upload API reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-reports-and-evidence
+          name: api-test-reports
+          path: reports/mochawesome/
+          if-no-files-found: warn
+          retention-days: 14
+
+  web:
+    name: Web E2E Tests
+    needs: lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Web tests
+        run: npm run test:web
+
+      - name: Upload Web reports and evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-test-reports
           path: |
-            reports/
+            reports/mochawesome/
             cypress/screenshots/
             cypress/videos/
+          if-no-files-found: warn
+          retention-days: 14
+
+  mobile:
+    name: Android Mobile Tests
+    needs: lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install mobile dependencies
+        working-directory: mobile
+        run: npm ci
+
+      - name: Install UiAutomator2 driver
+        working-directory: mobile
+        run: npx appium driver install uiautomator2
+
+      - name: Download Android test application
+        run: |
+          mkdir -p mobile/apps
+          curl -fL \
+            https://github.com/saucelabs/my-demo-app-android/releases/download/2.3.0/mda-2.3.0-27.apk \
+            -o mobile/apps/mda-2.3.0-27.apk
+
+      - name: Run tests on Android Emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          profile: pixel_2
+          disable-animations: true
+          script: |
+            adb install mobile/apps/mda-2.3.0-27.apk
+
+            cd mobile
+
+            npx appium --address 127.0.0.1 --port 4723 > ../appium.log 2>&1 &
+
+            for attempt in $(seq 1 30); do
+              if curl -sSf http://127.0.0.1:4723/status > /dev/null; then
+                break
+              fi
+              sleep 2
+            done
+
+            curl -sSf http://127.0.0.1:4723/status
+
+            npm test
+
+      - name: Upload Appium logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-test-logs
+          path: appium.log
           if-no-files-found: warn
           retention-days: 14

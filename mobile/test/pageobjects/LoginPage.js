@@ -1,4 +1,4 @@
-const { $, driver } = require('@wdio/globals');
+const { $ } = require('@wdio/globals');
 
 const APP_ID = 'com.saucelabs.mydemoapp.android';
 
@@ -73,13 +73,6 @@ async verifyLoggedOut() {
     return await this.loginOption.isDisplayed();
 }
 
-    async dismissKeyboard() {
-        try {
-            await driver.hideKeyboard();
-        } catch (error) {
-           
-        }
-    }
 
     async login(username, password) {
     await this.usernameInput.waitForDisplayed({ timeout: 15000 });

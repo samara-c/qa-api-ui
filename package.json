@@ -4,9 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm run test:api && npm run test:web",
     "cy:open": "cypress open",
-    "cy:run": "cypress run"
+    "cy:run": "cypress run",
+    "test:api": "cypress run --spec \"cypress/e2e/api/**/*.cy.js\"",
+    "test:web": "cypress run --spec \"cypress/e2e/ui/**/*.feature,cypress/e2e/ui/**/*.cy.js\"",
+    "lint": "eslint .",
+    "check": "npm run lint && npm test",
+    "test:mobile": "npm --prefix mobile test"
   },
   "cypress-cucumber-preprocessor": {
     "stepDefinitions": [
@@ -22,8 +27,12 @@
   "devDependencies": {
     "@badeball/cypress-cucumber-preprocessor": "^28.0.1",
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.8",
+    "@eslint/js": "^10.0.1",
+    "ajv": "^8.20.0",
     "cypress": "^16.2.1",
     "esbuild": "^0.28.2",
+    "eslint": "^10.14.0",
+    "globals": "^17.14.0",
     "mochawesome": "^8.1.1"
   }
 }
